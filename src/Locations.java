@@ -1,3 +1,4 @@
+import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.Collection;
@@ -9,18 +10,13 @@ public class Locations implements Map<Integer, Location>{
     private static Map<Integer, Location> locations = new HashMap<>();
 
     public static void main(String[] args) throws IOException {
-        FileWriter locFile = null;
-        try {
-            locFile = new FileWriter("locations.txt");
+        try (FileWriter locFile = new FileWriter("locations.txt");
+             FileWriter dirFile = new FileWriter("directions.txt")) {
             for (Location location : locations.values()) {
                 locFile.write(location.getLocationID() + "," + location.getDescription() + "\n");
-            }
-        } finally {
-            System.out.println("In finally block");
-
-            if (locFile != null) {
-                System.out.println("Attempting to close locFile");
-                locFile.close();
+                for (String direction : location.getExits().keySet()) {
+                    dirFile.write(location.getLocationID() + "," + direction + "," + location.getExits().get(direction) + "\n");
+                }
             }
         }
     }
